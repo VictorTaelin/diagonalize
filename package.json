@@ -1,6 +1,6 @@
 {
   "name": "diagonalize",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Searches through infinite branches",
   "main": "diagonalize.js",
   "scripts": {

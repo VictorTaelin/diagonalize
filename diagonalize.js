@@ -20,7 +20,11 @@ function diagonalize(fn, args = []) {
         }
       }
     }
-    rec = neo;
+    if (neo.length === 0) {
+      throw "Search failed.";
+    } else {
+      rec = neo;
+    };
   };
 };
 
