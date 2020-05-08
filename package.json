@@ -1,0 +1,19 @@
+{
+  "name": "diagonalize",
+  "version": "0.1.0",
+  "description": "Searches through infinite branches",
+  "main": "diagonalize.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maiavictor/diagonalize.git"
+  },
+  "author": "Victor Maia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maiavictor/diagonalize/issues"
+  },
+  "homepage": "https://github.com/maiavictor/diagonalize#readme"
+}
