@@ -1,18 +1,14 @@
-var diagonalize = require(".");
+var D = require(".");
 
-// Searches for a 12-bit string following the 0101... pattern
-function* search(s = "") { 
-  if (s.length === 20 && /^(01)*$/.test(s)) {
-    return s;
-  } else if (/(11)/.test(s)) {
-    throw "pruned";
+// Searches for a 16-bit string following the 0101... pattern
+function search(s = "") { 
+  if (s.length === 16 && /^(01)*$/.test(s)) {
+    return D.done(s);
+  } else if (/(11)/.test(s) || /(00)/.test(s)) { // optimizes by pruning
+    throw "prune";
   } else {
-    var a = yield [
-      search("0" + s),
-      search("1" + s),
-    ];
-    return a;
+    return D.call([[search,[s+"0"]], [search,[s+"1"]]], (a) => D.done(a));
   };
 };
 
-console.log(diagonalize(search));
+console.log("found " + D.diagonalize(() => search("")));
