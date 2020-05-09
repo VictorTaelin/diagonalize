@@ -20,19 +20,21 @@ function exec(fn) {
   var index = 0;
   var error = null;
   while (index < wides.length || deeps.length > 0) {
-    var got = wides[deeps.length ? deeps.pop() : index];
+    if (deeps.length > 0) {
+      var got = deeps.pop();
+    } else {
+      var got = wides[index];
+      wides[index++] = null;
+    };
     if (got) {
       var [func, cont] = got;
-      wides[index] = null;
       switch (func.ctor) {
         case "done":
           switch (cont.ctor) {
             case "Nil":
               return func.retr;
             case "Ext":
-              var next = cont.head(func.retr);
-              deeps.push(wides.length);
-              wides.push([next, cont.tail]);
+              deeps.push([cont.head(func.retr), cont.tail]);
               break;
           }
           break;
@@ -43,13 +45,13 @@ function exec(fn) {
           for (var [fn,xs] of func.next) {
             var next = fn(...xs);
             if (func.deep) {
-              deeps.push(wides.length);
+              deeps.push([next, {ctor:"Ext",head:func.then,tail:cont}]);
+            } else {
+              wides.push([next, {ctor:"Ext",head:func.then,tail:cont}]);
             }
-            wides.push([next, {ctor:"Ext",head:func.then,tail:cont}]);
           };
       };
     };
-    ++index;
   };
   throw error || "Search failed.";
 };
