@@ -1,10 +1,21 @@
-// Diagonalizes a function
-function diagonalize(fn) {
-  var nodes = [[fn(), {ctor:"Nil"}]];
-  var visit = [];
+function wide(next, then) {
+  return {ctor: "call", deep: false, next, then};
+};
+
+function deep(next, then) {
+  return {ctor: "call", deep: true, next, then};
+};
+
+function done(retr) {
+  return {ctor: "done", retr};
+};
+
+function exec(fn) {
+  var wides = [[fn(), {ctor:"Nil"}]];
+  var deeps = [];
   var index = 0;
-  while (index < nodes.length || visit.length > 0) {
-    var [func, cont] = nodes[visit.length ? visit.pop() : index++];
+  while (index < wides.length || deeps.length > 0) {
+    var [func, cont] = wides[deeps.length ? deeps.pop() : index++];
     switch (func.ctor) {
       case "done":
         switch (cont.ctor) {
@@ -13,8 +24,8 @@ function diagonalize(fn) {
           case "Ext":
             try {
               var next = cont.head(func.retr);
-              visit.push(nodes.length);
-              nodes.push([next, cont.tail]);
+              deeps.push(wides.length);
+              wides.push([next, cont.tail]);
             } catch (e) {
               null; // pruned
             }
@@ -25,23 +36,17 @@ function diagonalize(fn) {
         for (var [fn,xs] of func.next) {
           try {
             var next = fn(...xs);
-            nodes.push([next, {ctor:"Ext",head:func.then,tail:cont}]);
+            if (func.deep) {
+              deeps.push(wides.length);
+            }
+            wides.push([next, {ctor:"Ext",head:func.then,tail:cont}]);
           } catch (e) {
             null; // pruned
           };
         };
-        break;
     };
   };
   throw "Search failed.";
 };
 
-function call(next, then) {
-  return {ctor: "call", next, then};
-};
-
-function done(retr) {
-  return {ctor: "done", retr};
-};
-
-module.exports = {diagonalize, call, done};
+module.exports = {wide, deep, done, exec};

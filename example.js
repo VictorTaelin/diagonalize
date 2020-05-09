@@ -7,8 +7,20 @@ function search(s = "") {
   } else if (/(11)/.test(s) || /(00)/.test(s)) { // optimizes by pruning
     throw "prune";
   } else {
-    return D.call([[search,[s+"0"]], [search,[s+"1"]]], (a) => D.done(a));
+    return D.wide([[search,[s+"0"]], [search,[s+"1"]]], (a) => D.done(a));
   };
 };
+console.log("found " + D.exec(() => search("")));
 
-console.log("found " + D.diagonalize(() => search("")));
+// Computes 2^8 recursively
+function pow(n = 0) { 
+  if (n === 8) {
+    return D.done(1);
+  } else {
+    return (
+      D.deep([[pow, [n + 1]]], (a) => 
+      D.deep([[pow, [n + 1]]], (b) => 
+      D.done(a + b))));
+  };
+};
+console.log("found " + D.exec(() => pow(0)));
