@@ -29,6 +29,7 @@ function diagonalize(func) {
     } catch (e) {}
     ++index;
   }
+  throw "Search failed.";
 };
 
 module.exports = diagonalize;
