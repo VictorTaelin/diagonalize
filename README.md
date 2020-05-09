@@ -4,7 +4,7 @@ Diagonalize
 Allows you to create breadth-first recursive functions to search possibly
 infinite branches without getting stuck. For example:
 
-```
+```javascript
 var D = require(".");
 
 // Searches for a 16-bit string following the 0101... pattern
