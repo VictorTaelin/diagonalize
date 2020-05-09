@@ -4,7 +4,7 @@ Diagonalize
 Allows you to create breadth-first recursive functions to search possibly
 infinite branches without getting stuck. For example:
 
-```
+```javascript
 // Searches for a 16-bit string following the 0101... pattern
 function search(s = "") { 
   if (s.length === 8 && /^(01)*$/.test(s)) {
@@ -26,7 +26,7 @@ search by pruning bad branches (strings containing consecutive 1s or 0s) with a
 `D.fail`. You can also represent normal recursive calls (depth first) with
 `D.deep`, which immediately resumes the recursive branches:
 
-```
+```javascript
 // Computes 2^8 recursively
 function pow(n = 0) { 
   if (n === 8) {
