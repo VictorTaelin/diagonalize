@@ -1,17 +1,18 @@
 var diagonalize = require(".");
 
-// Performs a search on binary strings
-function* search(cond, str = "") {
-  yield search(cond, "0" + str);
-  yield search(cond, "1" + str);
-  if (cond(str)) {
-    return str;
+// Searches for a 12-bit string following the 0101... pattern
+function* search(s = "") { 
+  if (s.length === 20 && /^(01)*$/.test(s)) {
+    return s;
+  } else if (/(11)/.test(s)) {
+    throw "pruned";
   } else {
-    throw null;
-  }
+    var a = yield [
+      search("0" + s),
+      search("1" + s),
+    ];
+    return a;
+  };
 };
 
-// Searches for a 12-bit string that matches /^(011)*$/
-console.log(diagonalize(search, [str => {
-  return str.length === 12 && /^(011)*$/.test(str);
-}, ""]));
+console.log(diagonalize(search));

@@ -1,31 +1,34 @@
 // Diagonalizes a generator function that:
 // - returns when the computation is complete
 // - throws to prune a bad branch
-// - yields a recursive call to explore a candidate branch
-function diagonalize(fn, args = []) {
-  var rec = [fn(...args)];
-  for (var i = 0; i < Infinity; ++i) {
-    var neo = [];
-    for (var fun of rec) {
-      while (true) {
-        try {
-          var got = fun.next();
-          if (got.done) {
-            return got.value;
-          } else {
-            neo.push(got.value);
-          }
-        } catch (e) {
-          break;
-        }
-      }
-    }
-    if (neo.length === 0) {
-      throw "Search failed.";
+// - yields an array of generators to explore infinite branches
+function diagonalize(func) {
+  var visit = [[null, func(), null]];
+  var revis = [];
+  var index = 0;
+  visits: while (index < visit.length || revis.length > 0) {
+    if (revis.length > 0) {
+      var [back,func,argm] = visit[revis.pop()];
     } else {
-      rec = neo;
-    };
-  };
+      var [back,func,argm] = visit[index];
+    }
+    try {
+      var next = func.next(argm); 
+      if (next.done) {
+        if (back === null) {
+          return next.value;
+        } else {
+          visit[back][2] = next.value;
+          revis.push(back);
+        };
+      } else {
+        for (var down of next.value) {
+          visit.push([index, down, null]);
+        };
+      }
+    } catch (e) {}
+    ++index;
+  }
 };
 
 module.exports = diagonalize;
