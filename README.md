@@ -7,10 +7,10 @@ infinite branches without getting stuck. For example:
 ```
 // Searches for a 16-bit string following the 0101... pattern
 function search(s = "") { 
-  if (s.length === 16 && /^(01)*$/.test(s)) {
+  if (s.length === 8 && /^(01)*$/.test(s)) {
     return D.done(s);
   } else if (/(11)/.test(s) || /(00)/.test(s)) { // optimizes by pruning
-    throw "prune";
+    return D.fail("prune");
   } else {
     return D.wide([[search,[s+"0"]], [search,[s+"1"]]], (a) => D.done(a));
   };
@@ -23,7 +23,7 @@ the `0101...` pattern. It uses `D.wide` to suspend the execution of the function
 and recurse on multiple branches, descending diagonally until a value is
 returned with `D.done`, and then continuing on the callback. It optimizes the
 search by pruning bad branches (strings containing consecutive 1s or 0s) with a
-`throw`. You can also represent normal recursive calls (depth first) with
+`D.fail`. You can also represent normal recursive calls (depth first) with
 `D.deep`, which immediately resumes the recursive branches:
 
 ```
